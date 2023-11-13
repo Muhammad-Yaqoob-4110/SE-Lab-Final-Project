@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_mate/pages/DashBoard/Account/account.dart';
+import 'package:money_mate/pages/DashBoard/Group/group.dart';
+import 'package:money_mate/config.dart';
 
 class DashBoard extends StatefulWidget {
   final dynamic data;
@@ -15,8 +17,8 @@ class DashBoard extends StatefulWidget {
 
 class _HomeScreenState extends State<DashBoard> {
   int _currentIndex = 0;
-  final Color customColor = const Color(0xFF666666);
-  final Color appColor = const Color(0xFF64C9AC);
+  final Color customColor = AppThemes.theme.primaryColor;
+  final Color appColor = AppThemes.theme.secondaryHeaderColor;
   late List<Widget> _pages;
 
   _HomeScreenState({required dynamic data, required int initialIndex})
@@ -27,7 +29,7 @@ class _HomeScreenState extends State<DashBoard> {
     super.initState();
 
     _pages = [
-      const Center(child: Text('Groups')),
+      Group(data: widget.data),
       const Center(child: Text('Friends')),
       const Center(child: Text('Activity')),
       AccountScreen(data: widget.data),
@@ -49,7 +51,8 @@ class _HomeScreenState extends State<DashBoard> {
         currentIndex: _currentIndex,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: customColor,
-        unselectedItemColor: customColor,
+        unselectedItemColor: Colors.white,
+        backgroundColor: appColor,
         onTap: (index) {
           setState(() {
             _currentIndex = index;

@@ -7,13 +7,13 @@ class CustomOptionCard extends StatelessWidget {
   final Color cardColor;
   final Color textColor;
 
-  CustomOptionCard({
-    required this.text,
-    required this.icon,
-    required this.onTap,
-    required this.cardColor,
-    required this.textColor,
-  });
+  const CustomOptionCard(
+      {required this.text,
+      required this.icon,
+      required this.onTap,
+      required this.cardColor,
+      required this.textColor,
+      super.key});
 
   @override
   Widget build(BuildContext context) {

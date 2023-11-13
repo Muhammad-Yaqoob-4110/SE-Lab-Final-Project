@@ -4,7 +4,8 @@ const port = 4110;
 const cors = require("cors");
 const bodyparcer = require("body-parser");
 require("./utils/db");
-const userRouter = require("./routes/authenticationRoutes/userRoutes");
+const userRouter = require("./routes/userRoutes");
+const groupRouter = require("./routes/groupRoutes");
 
 // get fun has two arguments first is end point then call back (no need to call. Called automatically)function
 app.get("/", (req, res) => {
@@ -17,6 +18,9 @@ app.use(cors());
 
 // Product API
 app.use("/api", userRouter);
+
+// Group API
+app.use("/api", groupRouter);
 
 app.get("/welcome", (req, res) => {
   res.send("<h1>Welcome Ali Ahmed</h1>");

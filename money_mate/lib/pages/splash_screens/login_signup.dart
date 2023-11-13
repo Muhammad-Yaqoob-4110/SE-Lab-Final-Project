@@ -12,6 +12,8 @@ import 'package:money_mate/pages/DashBoard/dashboard.dart';
 
 import 'package:money_mate/api_calls/signupapi.dart';
 
+import 'package:money_mate/config.dart';
+
 class LoginSignup extends StatefulWidget {
   @override
   _LoginSignupState createState() => _LoginSignupState();
@@ -28,10 +30,10 @@ class _LoginSignupState extends State<LoginSignup> {
   final TextEditingController _loginEmailController = TextEditingController();
   final TextEditingController _loginPasswordController =
       TextEditingController();
-  final Color customColor = const Color(0xFF666666);
-  final Color appColor = const Color(0xFF64C9AC);
-  final String loginUserApi = "http://localhost:4110/api/users/login";
-  final String signUpApi = "http://localhost:4110/api/users";
+  final Color customColor = AppThemes.theme.primaryColor;
+  final Color appColor = AppThemes.theme.secondaryHeaderColor;
+  final String loginUserApi = ApiConstants.loginUserApi;
+  final String signUpApi = ApiConstants.signUpApi;
 
   // Use a variable to track which button is clicked
   bool isLoginButtonClicked = true;

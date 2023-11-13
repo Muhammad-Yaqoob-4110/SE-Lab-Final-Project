@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:money_mate/pages/login_signup.dart';
+import 'package:money_mate/pages/splash_screens/login_signup.dart';
 import 'package:money_mate/pages/DashBoard/Account/account_edit.dart';
 import 'package:money_mate/commonWidgets/card_widget.dart';
 import 'package:money_mate/commonFunctions/email_utils.dart';
 import 'package:money_mate/commonWidgets/profile_info.dart';
+import 'package:money_mate/config.dart';
 
 class AccountScreen extends StatefulWidget {
   final dynamic data;
@@ -16,8 +17,8 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   final dynamic data;
-  final Color customColor = const Color(0xFF666666);
-  final Color appColor = const Color(0xFF64C9AC);
+  final Color customColor = AppThemes.theme.primaryColor;
+  final Color appColor = AppThemes.theme.secondaryHeaderColor;
   _AccountScreenState({required this.data});
 
   @override
@@ -25,31 +26,25 @@ class _AccountScreenState extends State<AccountScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           child: Column(
             children: [
               Column(
-                children: [
+                children: <Widget>[
                   ProfileInfo(
                     text: '${data["fullName"]}',
-                    fontSize: 24,
-                    textColor: appColor,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    textColor: Colors.black,
+                    fontWeight: FontWeight.normal,
                   ),
                   const SizedBox(height: 10),
                   ProfileInfo(
                     text: '${data["email"]}',
-                    fontSize: 16,
-                    textColor: appColor,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                    textColor: Colors.black,
+                    fontWeight: FontWeight.normal,
                   ),
                   const SizedBox(height: 10),
-                  ProfileInfo(
-                    text: '${data["phoneNo"]}',
-                    fontSize: 16,
-                    textColor: appColor,
-                    fontWeight: FontWeight.bold,
-                  ),
                 ],
               ),
               const SizedBox(height: 100),
@@ -104,7 +99,7 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ),
       ),
-      backgroundColor: Colors.yellow,
+      backgroundColor: appColor,
     );
   }
 }

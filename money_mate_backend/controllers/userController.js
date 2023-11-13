@@ -1,4 +1,4 @@
-const User = require("../../models/authenticationModel/userModel");
+const User = require("../models/userModel");
 
 // Create a User
 async function createUser(req, res) {
@@ -76,6 +76,7 @@ const loginUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 module.exports = {
   createUser,
   getUserByEmail,
