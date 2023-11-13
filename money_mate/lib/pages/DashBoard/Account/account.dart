@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_mate/pages/login.dart';
+import 'package:money_mate/pages/login_signup.dart';
 import 'package:money_mate/pages/DashBoard/Account/account_edit.dart';
 import 'package:money_mate/commonWidgets/card_widget.dart';
 import 'package:money_mate/commonFunctions/email_utils.dart';
@@ -90,7 +90,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Login(),
+                      builder: (context) => LoginSignup(),
                     ),
                   );
                 },

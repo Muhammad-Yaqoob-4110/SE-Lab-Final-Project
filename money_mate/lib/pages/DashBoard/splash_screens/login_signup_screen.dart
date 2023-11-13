@@ -9,10 +9,7 @@ class LoginSignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('MoneyMate'),
-        backgroundColor: appColor,
-      ),
+      backgroundColor: appColor,
       body: CustomContainer(children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,

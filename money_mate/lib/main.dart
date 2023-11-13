@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:money_mate/pages/DashBoard/splash_screens/splash_screen.dart';
 import 'package:money_mate/pages/sign_up.dart';
 import 'package:money_mate/pages/login.dart';
+import 'package:money_mate/pages/login_signup.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,7 +16,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(),
       initialRoute: '/', // or any other initial route
       routes: {
-        '/': (context) => const MoneyMateSplashScreen(),
+        // '/': (context) => const MoneyMateSplashScreen(),
+        '/': (context) => LoginSignup(),
         '/signup': (context) => const SignUp(),
         '/login': (context) => const Login(),
         // '/dashboard': (context) => const DashBoard(),

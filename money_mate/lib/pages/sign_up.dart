@@ -5,6 +5,7 @@ import 'package:money_mate/commonWidgets/custom_outlined_button_widget.dart';
 import 'package:money_mate/commonWidgets/link_widget.dart';
 import 'package:money_mate/commonFunctions/alerts.dart';
 import 'package:money_mate/api_calls/signupapi.dart';
+import 'package:money_mate/pages/DashBoard/dashboard.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
@@ -90,7 +91,18 @@ class _SignUpState extends State<SignUp> {
                         email: email,
                         password: password,
                         phoneNo: phoneNo)
-                    .then((message) {
+                    .then((responseData) {
+                  final message = responseData["message"];
+                  if (message == "User created successfully") {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DashBoard(
+                          data: responseData["user"],
+                        ),
+                      ),
+                    );
+                  }
                   showCustomApiResponce(context, message);
                 }).catchError((error) {
                   showCustomErrorOccured(context, "An error occurred: $error");

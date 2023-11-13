@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-Future<String> signupUser(
+Future<Map<String, dynamic>> signupUser(
     {required String apiUrl,
     required String fullName,
     required String email,
@@ -23,6 +23,5 @@ Future<String> signupUser(
   );
 
   final responseData = json.decode(response.body);
-  final message = responseData["message"];
-  return message;
+  return responseData;
 }
