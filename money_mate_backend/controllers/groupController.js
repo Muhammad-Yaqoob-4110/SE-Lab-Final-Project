@@ -1,32 +1,30 @@
 const Groups = require("../models/groupModel");
 const User = require("../models/userModel");
 
-async function createGroup(req, res) {
+async function getAllGroups(req, res) {
   try {
-    const { name } = req.body;
-
-    const newGroup = new Groups({
-      name,
-      members: [],
-      expenses: [],
-    });
-
-    // Save the new group to the database
-    const savedGroup = await newGroup.save();
-
-    res.status(201).json({
-      message: "Group created successfully",
-      group: savedGroup,
-    });
+    const { email } = req.params;
+    const groups = await Groups.find({ members: email }).exec();
+    res.status(200).json({ message: "All Groups", groups });
   } catch (error) {
-    console.error("Error creating group:", error);
-
-    res.status(500).json({
-      message: "Error creating group. Please try again later.",
-      error: error.message,
-    });
+    console.error(error);
+    res.status(500).json({ error: "Error fetching groups" });
   }
 }
+const createGroup = async (req, res) => {
+  try {
+    const { name, createdBy } = req.body;
+
+    const newGroup = new Groups({ name, createdBy, members: [createdBy] });
+    await newGroup.save();
+    res.status(201).json({
+      message: "Group created successfully",
+      group: newGroup,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 
 async function addExpences(req, res) {
   try {
@@ -110,4 +108,5 @@ module.exports = {
   createGroup,
   addMembers,
   addExpences,
+  getAllGroups,
 };

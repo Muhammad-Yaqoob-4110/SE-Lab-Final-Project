@@ -19,6 +19,10 @@ void showCustomNameAlert(BuildContext context) {
   showCustomAlert(context, "Alert", "Your full name is required to continue.");
 }
 
+void showCustomGroupNameAlert(BuildContext context) {
+  showCustomAlert(context, "Alert", "Group name is required to continue.");
+}
+
 void showCustomEmailAlert(BuildContext context) {
   showCustomAlert(context, "Alert", "Double-check your email for any typos.");
 }
@@ -36,6 +40,7 @@ void showCustomPhoneAlert(BuildContext context) {
 void showCustomApiResponce(BuildContext context, String message) {
   showCustomAlert(context, "Api Responce", message);
 }
+
 void showCustomErrorOccured(BuildContext context, String message) {
   showCustomAlert(context, "Error Occurred", message);
 }

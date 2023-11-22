@@ -10,4 +10,6 @@ router.post("/add-member", groupController.addMembers);
 // Add an expense to a group
 router.post("/add-expense/:groupId", groupController.addExpences);
 
+// get all groups list
+router.get("/groups/:email", groupController.getAllGroups);
 module.exports = router;

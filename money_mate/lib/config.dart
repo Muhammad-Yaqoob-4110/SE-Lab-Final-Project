@@ -5,11 +5,15 @@ class ApiConstants {
   static const String loginUserApi = "$baseUrl/users/login";
   static const String signUpApi = "$baseUrl/users";
   static const String updateUserApi = "$baseUrl/users";
+  static const String createGroupApi = "$baseUrl/create-group";
 }
 
 class AppThemes {
   static ThemeData theme = ThemeData(
-    primaryColor: Color.fromARGB(255, 219, 103, 103),
-    secondaryHeaderColor: Color.fromARGB(255, 128, 141, 134),
+    // final Color customColor/primary = const Color(0xFF666666);
+    // final Color appColor/secondary = const Color(0xFF64C9AC);
+
+    primaryColor: const Color(0xFF666666),
+    secondaryHeaderColor: const Color(0xFF64C9AC),
   );
 }
