@@ -7,7 +7,7 @@ Future<Map<String, dynamic>> createGroupApiCall(
     required String creatorEmail}) async {
   final data = {
     "name": groupName,
-    "creator": creatorEmail,
+    "createdBy": creatorEmail,
   };
 
   final response = await http.post(

@@ -38,14 +38,14 @@ class _HomeScreenState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> tabTitles = ['GROUPS', 'FRIENDS', 'ACTIVITY', 'ACCOUNT'];
+    // final List<String> tabTitles = ['GROUPS', 'FRIENDS', 'ACTIVITY', 'ACCOUNT'];
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _currentIndex == 3 ? 'ACCOUNT' : tabTitles[_currentIndex],
-        ),
-        backgroundColor: appColor,
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     _currentIndex == 3 ? 'ACCOUNT' : tabTitles[_currentIndex],
+      //   ),
+      //   backgroundColor: appColor,
+      // ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,

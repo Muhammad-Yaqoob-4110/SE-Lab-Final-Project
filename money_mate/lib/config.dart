@@ -6,6 +6,7 @@ class ApiConstants {
   static const String signUpApi = "$baseUrl/users";
   static const String updateUserApi = "$baseUrl/users";
   static const String createGroupApi = "$baseUrl/create-group";
+  static const String getAllGroupsByEmailApi = "$baseUrl/groups";
 }
 
 class AppThemes {
