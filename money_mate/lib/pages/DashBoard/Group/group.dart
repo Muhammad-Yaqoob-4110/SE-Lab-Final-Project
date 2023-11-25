@@ -2,6 +2,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:money_mate/config.dart';
+import 'package:money_mate/commonWidgets/inpuptWidget.dart';
+import 'package:money_mate/commonFunctions/alerts.dart';
 
 class Group extends StatefulWidget {
   final dynamic data;
@@ -16,11 +18,55 @@ class _GroupState extends State<Group> {
   final Color appColor = AppThemes.theme.secondaryHeaderColor;
   bool showContent = false;
   List<Map<String, dynamic>> groupList = [];
-
+  final TextEditingController _groupNameController = TextEditingController();
   @override
   void initState() {
     super.initState();
     fetchData();
+  }
+
+  Future<void> _addGroupDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Create a group'),
+          content: CustomInputField(
+            label: 'Group name',
+            icon: Icons.group_add_sharp,
+            controller: _groupNameController,
+            customColor: customColor,
+            appColor: appColor,
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Done'),
+              onPressed: () {
+                var groupName = _groupNameController.text.trim();
+                if (groupName == "") {
+                  showCustomGroupNameAlert(context);
+                } else {
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> fetchData() async {
@@ -56,7 +102,7 @@ class _GroupState extends State<Group> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              // showUserDialog(null); // Pass null to indicate add mode
+              _addGroupDialog(context);
             },
           ),
         ],
@@ -74,12 +120,8 @@ class _GroupState extends State<Group> {
                 // Wrap the DataRow with GestureDetector
                 onSelectChanged: (isSelected) {
                   if (isSelected != null && isSelected) {
-                    // Add your navigation logic here
-                    // For example, you can use Navigator to push a new page
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => AnotherPage()),
-                    // );
+                    // _dialogBuilder(context);
+                    // child: const Text('Open Dialog'),
                   }
                 },
                 cells: <DataCell>[
