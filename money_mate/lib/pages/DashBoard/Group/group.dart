@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:money_mate/api_calls/creategroupapi.dart';
 import 'package:money_mate/config.dart';
 import 'package:money_mate/commonWidgets/inpuptWidget.dart';
 import 'package:money_mate/commonFunctions/alerts.dart';
@@ -55,11 +56,28 @@ class _GroupState extends State<Group> {
               ),
               child: const Text('Done'),
               onPressed: () {
-                var groupName = _groupNameController.text.trim();
-                if (groupName == "") {
+                var gpName = _groupNameController.text.trim();
+                if (gpName == "") {
                   showCustomGroupNameAlert(context);
                 } else {
-                  Navigator.of(context).pop();
+                  createGroupApiCall(
+                          apiUrl: ApiConstants.createGroupApi,
+                          groupName: gpName,
+                          creatorEmail: widget.data["email"])
+                      .then((responseData) {
+                    final message = responseData["message"];
+                    if (message == "Group created successfully") {
+                      setState(() {
+                        groupList.add(responseData["group"]);
+                      });
+                      _groupNameController.text = "";
+                      Navigator.of(context).pop();
+                    }
+                    showCustomApiResponce(context, message);
+                  }).catchError((error) {
+                    showCustomErrorOccured(
+                        context, "An error occurred: $error");
+                  });
                 }
               },
             ),
