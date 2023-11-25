@@ -5,6 +5,7 @@ import 'package:money_mate/api_calls/creategroupapi.dart';
 import 'package:money_mate/config.dart';
 import 'package:money_mate/commonWidgets/inpuptWidget.dart';
 import 'package:money_mate/commonFunctions/alerts.dart';
+import 'package:money_mate/api_calls/add_member_to_group_api.dart';
 
 class Group extends StatefulWidget {
   final dynamic data;
@@ -20,6 +21,8 @@ class _GroupState extends State<Group> {
   bool showContent = false;
   List<Map<String, dynamic>> groupList = [];
   final TextEditingController _groupNameController = TextEditingController();
+  final TextEditingController _newgroupMemberController =
+      TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -87,6 +90,74 @@ class _GroupState extends State<Group> {
     );
   }
 
+  Future<void> _addMemberToGroupDialog(BuildContext context, dynamic group) {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add people to group'),
+          content: CustomInputField(
+            label: 'Enter email',
+            icon: Icons.email,
+            controller: _newgroupMemberController,
+            customColor: customColor,
+            appColor: appColor,
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Done'),
+              onPressed: () {
+                var newUserEmail = _newgroupMemberController.text.trim();
+                if (newUserEmail == "") {
+                  showCustomEmailAlert(context);
+                } else {
+                  addMemberToGroup(
+                          apiUrl: ApiConstants.addMemberToGroupApi,
+                          groupId: group["_id"],
+                          userEmail: newUserEmail)
+                      .then((responseData) {
+                    final message = responseData["message"];
+                    if (message == "User added to the group successfully") {
+                      setState(() {
+                        int indexToUpdate = groupList.indexWhere((group) =>
+                            group['_id'] == responseData["group"]['_id']);
+
+                        if (indexToUpdate != -1) {
+                          groupList[indexToUpdate] = responseData["group"];
+                        } else {
+                          groupList.add(responseData["group"]);
+                        }
+                      });
+                      _newgroupMemberController.text = "";
+                      Navigator.of(context).pop();
+                    }
+                    showCustomApiResponce(context, message);
+                  }).catchError((error) {
+                    showCustomErrorOccured(
+                        context, "An error occurred: $error");
+                  });
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> fetchData() async {
     const getGroups = ApiConstants.getAllGroupsByEmailApi;
     var emailForGroup = widget.data["email"];
@@ -114,11 +185,11 @@ class _GroupState extends State<Group> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: customColor,
-        title: Text('Groups List'),
+        title: const Text('Groups List'),
         automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () {
               _addGroupDialog(context);
             },
@@ -151,8 +222,10 @@ class _GroupState extends State<Group> {
                         InkWell(
                           onTap: () {
                             // Add your edit logic here
+                            print(group);
+                            _addMemberToGroupDialog(context, group);
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.edit,
                             color: Colors.blue,
                           ),
@@ -162,7 +235,7 @@ class _GroupState extends State<Group> {
                           onTap: () {
                             // Add your delete logic here
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.delete,
                             color: Colors.red,
                           ),
