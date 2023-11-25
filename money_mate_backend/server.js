@@ -6,6 +6,7 @@ const bodyparcer = require("body-parser");
 require("./utils/db");
 const userRouter = require("./routes/userRoutes");
 const groupRouter = require("./routes/groupRoutes");
+const expenseRouter = require("./routes/expenseRoutes");
 
 // get fun has two arguments first is end point then call back (no need to call. Called automatically)function
 app.get("/", (req, res) => {
@@ -21,6 +22,9 @@ app.use("/api", userRouter);
 
 // Group API
 app.use("/api", groupRouter);
+
+// Expense API
+app.use("/api", expenseRouter);
 
 app.get("/welcome", (req, res) => {
   res.send("<h1>Welcome Ali Ahmed</h1>");

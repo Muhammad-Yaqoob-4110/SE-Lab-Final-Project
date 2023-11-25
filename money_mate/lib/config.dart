@@ -8,6 +8,8 @@ class ApiConstants {
   static const String createGroupApi = "$baseUrl/create-group";
   static const String getAllGroupsByEmailApi = "$baseUrl/groups";
   static const String addMemberToGroupApi = "$baseUrl/add-member";
+  static const String getAllExpensesList = "$baseUrl/all-expense";
+  static const String createExpenseApi = "$baseUrl/create-expense";
 }
 
 class AppThemes {

@@ -19,6 +19,11 @@ void showCustomNameAlert(BuildContext context) {
   showCustomAlert(context, "Alert", "Your full name is required to continue.");
 }
 
+void showDescriptionAlert(BuildContext context) {
+  showCustomAlert(
+      context, "Alert", "Short Description is required to continue.");
+}
+
 void showCustomGroupNameAlert(BuildContext context) {
   showCustomAlert(context, "Alert", "Group name is required to continue.");
 }
@@ -30,6 +35,11 @@ void showCustomEmailAlert(BuildContext context) {
 void showCustomPaswordAlert(BuildContext context) {
   showCustomAlert(context, "Alert",
       "Make your password stronger by adding numbers and symbols.");
+}
+
+void showAmountAlert(BuildContext context) {
+  showCustomAlert(context, "Alert",
+      "Please make sure to enter a positive whole number for the amount.");
 }
 
 void showCustomPhoneAlert(BuildContext context) {
@@ -53,4 +63,9 @@ bool isValidEmail(String email) {
 bool isValidPhoneNumber(String input) {
   RegExp phoneNumberPattern = RegExp(r'^\d{11}$');
   return phoneNumberPattern.hasMatch(input);
+}
+
+bool containsOnlyNumbers(String input) {
+  final RegExp regex = RegExp(r'^[0-9]+$');
+  return regex.hasMatch(input);
 }

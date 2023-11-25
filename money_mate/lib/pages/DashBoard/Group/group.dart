@@ -6,6 +6,7 @@ import 'package:money_mate/config.dart';
 import 'package:money_mate/commonWidgets/inpuptWidget.dart';
 import 'package:money_mate/commonFunctions/alerts.dart';
 import 'package:money_mate/api_calls/add_member_to_group_api.dart';
+import 'package:money_mate/pages/DashBoard/Group/group_expenses.dart';
 
 class Group extends StatefulWidget {
   final dynamic data;
@@ -209,6 +210,14 @@ class _GroupState extends State<Group> {
                 // Wrap the DataRow with GestureDetector
                 onSelectChanged: (isSelected) {
                   if (isSelected != null && isSelected) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            GroupDetailsPage(groupDetails: group),
+                      ),
+                    );
+                    // print(group);
                     // _dialogBuilder(context);
                     // child: const Text('Open Dialog'),
                   }
@@ -222,12 +231,12 @@ class _GroupState extends State<Group> {
                         InkWell(
                           onTap: () {
                             // Add your edit logic here
-                            print(group);
+                            // print(group);
                             _addMemberToGroupDialog(context, group);
                           },
-                          child: const Icon(
+                          child: Icon(
                             Icons.edit,
-                            color: Colors.blue,
+                            color: customColor,
                           ),
                         ),
                         const SizedBox(width: 16),
