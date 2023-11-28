@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   final String loginUserApi = ApiConstants.loginUserApi;
+  String validate = "";
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +75,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: _passwordController,
                             ),
                           ),
+                          Text(
+                            validate,
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
                           Container(
                             padding:
                                 EdgeInsets.only(left: 10, right: 10, top: 30),
@@ -85,10 +92,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                       _passwordController.text.trim();
 
                                   if (isValidEmail(email) == false) {
-                                    showCustomEmailAlert(context);
+                                    setState(() {
+                                      validate =
+                                          "Double-check your email for any typos.";
+                                    });
+                                    // showCustomEmailAlert(context);
                                   } else if (password == "") {
-                                    showCustomPaswordAlert(context);
+                                    setState(() {
+                                      validate = "Password is required.";
+                                    });
+                                    // showCustomPaswordAlert(context);
                                   } else {
+                                    setState(() {
+                                      validate = "";
+                                    });
                                     loginUserApiCall(
                                             apiUrl: loginUserApi,
                                             email: email,

@@ -213,7 +213,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               width: MediaQuery.of(context).size.width / 3,
               child: TextButton(
                 onPressed: () {
-                  print("Sign up");
+                  // print("Sign up");
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => SignUpScreen()),
@@ -230,7 +230,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               width: MediaQuery.of(context).size.width / 3,
               child: TextButton(
                 onPressed: () {
-                  print("object");
+                  // print("object");
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => LoginScreen()));
                 },

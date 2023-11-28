@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+enum ActiveTab { Friends, Groups, Activity }
+
 class HomeScreen extends StatefulWidget {
   final dynamic data;
 
   HomeScreen({Key? key, this.data}) : super(key: key);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -15,10 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ItemData> groups = [];
   List<ItemData> activity = [];
 
+  ActiveTab _activeTab = ActiveTab.Friends;
+
   @override
   Widget build(BuildContext context) {
-    // print(widget.data);
-    // print(widget.data["fullName"]);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -63,8 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
               title: Text('Home'),
               leading: Icon(Icons.home),
               onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
               },
             ),
             ListTile(
@@ -173,6 +178,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text("Activity"),
                             ],
                             indicatorWeight: 4,
+                            onTap: (index) {
+                              setState(() {
+                                _activeTab = ActiveTab.values[index];
+                              });
+                            },
                           ),
                           Expanded(
                             child: Container(
@@ -180,21 +190,21 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   // Friends Tab
                                   ListView.builder(
-                                    itemCount: items.length,
+                                    itemCount: friends.length,
                                     itemBuilder: (context, index) {
-                                      String title = items[index].title;
-                                      String initialLetter = title.isNotEmpty
-                                          ? title[0].toUpperCase()
+                                      String friend =
+                                          friends[index].email ?? "";
+                                      String initialLetter = friend.isNotEmpty
+                                          ? friend[0].toUpperCase()
                                           : "";
 
                                       return Dismissible(
-                                        key: Key(items[index]
+                                        key: Key(friends[index]
                                             .timestamp
-                                            .toString()), // Use a unique key
+                                            .toString()),
                                         onDismissed: (direction) {
-                                          // Remove the item
                                           setState(() {
-                                            items.removeAt(index);
+                                            friends.removeAt(index);
                                           });
                                         },
                                         background: Container(
@@ -205,34 +215,35 @@ class _HomeScreenState extends State<HomeScreen> {
                                           padding: EdgeInsets.only(right: 16.0),
                                         ),
                                         child: ListTile(
+                                          onTap: () {
+                                            print('Item tapped: $friend');
+                                          },
                                           leading: CircleAvatar(
-                                            // Display the initial letter dynamically
                                             backgroundColor: Colors.blue,
                                             child: Text(initialLetter),
                                           ),
-                                          title: Text(title),
+                                          title: Text(friend),
                                           trailing: Text(
-                                              'Rs: ${items[index].amount}'),
+                                              'Rs: ${friends[index].email}'),
                                         ),
                                       );
                                     },
                                   ),
                                   // Groups Tab
-                                  // ... (similar implementation for other tabs)
                                   ListView.builder(
                                     itemCount: groups.length,
                                     itemBuilder: (context, index) {
-                                      String title = groups[index].title;
-                                      String initialLetter = title.isNotEmpty
-                                          ? title[0].toUpperCase()
-                                          : "";
+                                      String groupName =
+                                          groups[index].groupName ?? "";
+                                      String initialLetter =
+                                          groupName.isNotEmpty
+                                              ? groupName[0].toUpperCase()
+                                              : "";
 
                                       return Dismissible(
-                                        key: Key(groups[index]
-                                            .timestamp
-                                            .toString()), // Use a unique key
+                                        key: Key(
+                                            groups[index].timestamp.toString()),
                                         onDismissed: (direction) {
-                                          // Remove the item
                                           setState(() {
                                             groups.removeAt(index);
                                           });
@@ -245,59 +256,64 @@ class _HomeScreenState extends State<HomeScreen> {
                                           padding: EdgeInsets.only(right: 16.0),
                                         ),
                                         child: ListTile(
+                                          onTap: () {
+                                            print('Item tapped: $groupName');
+                                          },
                                           leading: CircleAvatar(
-                                            // Display the initial letter dynamically
                                             backgroundColor: Colors.blue,
                                             child: Text(initialLetter),
                                           ),
-                                          title: Text(title),
+                                          title: Text(groupName),
                                           trailing: Text(
-                                              'Rs: ${groups[index].amount}'),
+                                              'Rs: ${groups[index].groupName}'),
                                         ),
                                       );
                                     },
                                   ),
-                                  // Center(child: Text("Content for Tab 2")),
                                   // Activity Tab
-                                  ListView.builder(
-                                    itemCount: activity.length,
-                                    itemBuilder: (context, index) {
-                                      String title = activity[index].title;
-                                      String initialLetter = title.isNotEmpty
-                                          ? title[0].toUpperCase()
-                                          : "";
 
-                                      return Dismissible(
-                                        key: Key(activity[index]
-                                            .timestamp
-                                            .toString()), // Use a unique key
-                                        onDismissed: (direction) {
-                                          // Remove the item
-                                          setState(() {
-                                            activity.removeAt(index);
-                                          });
-                                        },
-                                        background: Container(
-                                          color: Colors.red,
-                                          child: Icon(Icons.delete,
-                                              color: Colors.white),
-                                          alignment: Alignment.centerRight,
-                                          padding: EdgeInsets.only(right: 16.0),
-                                        ),
-                                        child: ListTile(
-                                          leading: CircleAvatar(
-                                            // Display the initial letter dynamically
-                                            backgroundColor: Colors.blue,
-                                            child: Text(initialLetter),
-                                          ),
-                                          title: Text(title),
-                                          trailing: Text(
-                                              'Rs: ${activity[index].amount}'),
-                                        ),
-                                      );
-                                    },
+                                  // ListView.builder(
+                                  //   itemCount: activity.length,
+                                  //   itemBuilder: (context, index) {
+                                  //     String title = activity[index].title;
+                                  //     String initialLetter = title.isNotEmpty
+                                  //         ? title[0].toUpperCase()
+                                  //         : "";
+
+                                  //     return Dismissible(
+                                  //       key: Key(activity[index]
+                                  //           .timestamp
+                                  //           .toString()),
+                                  //       onDismissed: (direction) {
+                                  //         setState(() {
+                                  //           activity.removeAt(index);
+                                  //         });
+                                  //       },
+                                  //       background: Container(
+                                  //         color: Colors.red,
+                                  //         child: Icon(Icons.delete,
+                                  //             color: Colors.white),
+                                  //         alignment: Alignment.centerRight,
+                                  //         padding: EdgeInsets.only(right: 16.0),
+                                  //       ),
+                                  //       child: ListTile(
+                                  //         onTap: () {
+                                  //           print('Item tapped: $title');
+                                  //         },
+                                  //         leading: CircleAvatar(
+                                  //           backgroundColor: Colors.blue,
+                                  //           child: Text(initialLetter),
+                                  //         ),
+                                  //         title: Text(title),
+                                  //         trailing: Text(
+                                  //             'Rs: ${activity[index].amount}'),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  // ),
+                                  Center(
+                                    child: Text("Activity Screen"),
                                   )
-                                  // Center(child: Text("Content for Tab 3")),
                                 ],
                               ),
                             ),
@@ -314,16 +330,26 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Show a bottom sheet for adding new items
           showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
-              return AddItemBottomSheet(onItemAdded: (ItemData newItem) {
-                // Add the new item to the list
-                setState(() {
-                  items.add(newItem);
-                });
-              });
+              return AddItemBottomSheet(
+                onItemAdded: (ItemData newItem) {
+                  switch (_activeTab) {
+                    case ActiveTab.Friends:
+                      friends.add(newItem);
+                      break;
+                    case ActiveTab.Groups:
+                      groups.add(newItem);
+                      break;
+                    case ActiveTab.Activity:
+                      activity.add(newItem);
+                      break;
+                  }
+                  setState(() {});
+                },
+                activeTab: _activeTab,
+              );
             },
           );
         },
@@ -336,17 +362,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class AddItemBottomSheet extends StatefulWidget {
   final Function(ItemData) onItemAdded;
+  final ActiveTab activeTab;
 
-  const AddItemBottomSheet({Key? key, required this.onItemAdded})
-      : super(key: key);
+  const AddItemBottomSheet({
+    Key? key,
+    required this.onItemAdded,
+    required this.activeTab,
+  }) : super(key: key);
 
   @override
   _AddItemBottomSheetState createState() => _AddItemBottomSheetState();
 }
 
 class _AddItemBottomSheetState extends State<AddItemBottomSheet> {
-  TextEditingController titleController = TextEditingController();
-  TextEditingController amountController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController groupNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -355,40 +385,37 @@ class _AddItemBottomSheetState extends State<AddItemBottomSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(
-            controller: titleController,
-            decoration: InputDecoration(labelText: 'Title'),
-          ),
-          TextField(
-            controller: amountController,
-            decoration: InputDecoration(labelText: 'Amount'),
-          ),
+          // Additional fields based on the active tab
+          if (widget.activeTab == ActiveTab.Friends)
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(labelText: 'Friend\'s Email'),
+            ),
+          if (widget.activeTab == ActiveTab.Groups)
+            TextField(
+              controller: groupNameController,
+              decoration: InputDecoration(labelText: 'Group Name'),
+            ),
           SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              // Validate input
-              if (titleController.text.isNotEmpty &&
-                  amountController.text.isNotEmpty) {
-                // Set the current time
-                DateTime currentTime = DateTime.now();
+              DateTime currentTime = DateTime.now();
+              ItemData newItem = ItemData(
+                timestamp: currentTime,
+                // Additional data based on the active tab
+                email: widget.activeTab == ActiveTab.Friends
+                    ? emailController.text
+                    : null,
+                groupName: widget.activeTab == ActiveTab.Groups
+                    ? groupNameController.text
+                    : null,
+              );
 
-                // Create a new item with the current time
-                ItemData newItem = ItemData(
-                  title: titleController.text,
-                  amount: amountController.text,
-                  timestamp: currentTime,
-                );
+              widget.onItemAdded(newItem);
 
-                // Pass the new item to the callback
-                widget.onItemAdded(newItem);
-
-                // Clear the text fields
-                titleController.clear();
-                amountController.clear();
-
-                // Close the bottom sheet
-                Navigator.pop(context);
-              }
+              emailController.clear();
+              groupNameController.clear();
+              Navigator.pop(context);
             },
             child: Text('Add Item'),
           ),
@@ -399,10 +426,13 @@ class _AddItemBottomSheetState extends State<AddItemBottomSheet> {
 }
 
 class ItemData {
-  final String title;
-  final String amount;
   final DateTime timestamp;
+  final String? email;
+  final String? groupName;
 
-  ItemData(
-      {required this.title, required this.amount, required this.timestamp});
+  ItemData({
+    required this.timestamp,
+    this.email,
+    this.groupName,
+  });
 }

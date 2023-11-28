@@ -40,6 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
   final String signUpApi = ApiConstants.signUpApi;
+  String validate = "";
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -111,6 +112,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             controller: _numberController,
                           ),
                         ),
+                        Text(
+                          validate,
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
+                        ),
                         Container(
                           padding:
                               EdgeInsets.only(left: 10, right: 10, top: 30),
@@ -122,14 +129,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 var password = _passController.text.trim();
                                 var phoneNo = _numberController.text.trim();
                                 if (fullName == "") {
-                                  showCustomNameAlert(context);
+                                  setState(() {
+                                    validate =
+                                        "Your full name is required to continue.";
+                                  });
+                                  // showCustomNameAlert(context);
                                 } else if (isValidEmail(email) == false) {
-                                  showCustomEmailAlert(context);
+                                  setState(() {
+                                    validate =
+                                        "Double-check your email for any typos.";
+                                  });
+                                  // showCustomEmailAlert(context);
                                 } else if (password == "") {
-                                  showCustomPaswordAlert(context);
+                                  setState(() {
+                                    validate = "Password is required.";
+                                  });
+                                  // showCustomPaswordAlert(context);
                                 } else if (isValidPhoneNumber(phoneNo) ==
                                     false) {
-                                  showCustomPhoneAlert(context);
+                                  validate = "Phone number format 03XXXXXXXXX.";
+                                  // showCustomPhoneAlert(context);
                                 } else {
                                   signupUser(
                                           apiUrl: signUpApi,
