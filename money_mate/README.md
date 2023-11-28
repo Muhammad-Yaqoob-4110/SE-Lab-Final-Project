@@ -1,4 +1,4 @@
-# money_mate
+# splitwise
 
 A new Flutter project.
 
