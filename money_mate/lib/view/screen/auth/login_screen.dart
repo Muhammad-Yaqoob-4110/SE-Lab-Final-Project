@@ -6,6 +6,9 @@ import 'package:moneymate/view/basewidget/textfield/custom_password_textfield.da
 import 'package:moneymate/view/basewidget/textfield/customtextfield.dart';
 import 'package:moneymate/view/screen/auth/widget/custom_tool_bar.dart';
 import 'package:moneymate/view/screen/home/home_screen.dart';
+import 'package:moneymate/alerts/alerts.dart';
+import 'package:moneymate/APIs/loginapi.dart';
+import 'package:moneymate/config.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,6 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  final String loginUserApi = ApiConstants.loginUserApi;
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +80,37 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: CustomTextButton(
                                 text: "Login",
                                 onPress: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => HomeScreen()));
+                                  var email = _emailController.text.trim();
+                                  var password =
+                                      _passwordController.text.trim();
+
+                                  if (isValidEmail(email) == false) {
+                                    showCustomEmailAlert(context);
+                                  } else if (password == "") {
+                                    showCustomPaswordAlert(context);
+                                  } else {
+                                    loginUserApiCall(
+                                            apiUrl: loginUserApi,
+                                            email: email,
+                                            password: password)
+                                        .then((responseData) {
+                                      final message = responseData["message"];
+                                      if (message ==
+                                          "Authentication successful") {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => HomeScreen(
+                                                data: responseData["data"]),
+                                          ),
+                                        );
+                                      }
+                                      // showCustomApiResponce(context, message);
+                                    }).catchError((error) {
+                                      showCustomErrorOccured(
+                                          context, "An error occurred: $error");
+                                    });
+                                  }
                                 }),
                           ),
                         ]),

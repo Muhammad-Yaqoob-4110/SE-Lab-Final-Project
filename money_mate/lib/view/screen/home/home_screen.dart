@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
+  final dynamic data;
+
+  HomeScreen({Key? key, this.data}) : super(key: key);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -8,9 +11,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Color myColor = Color(0xFF4CBB9B);
   List<ItemData> items = [];
+  List<ItemData> friends = [];
+  List<ItemData> groups = [];
+  List<ItemData> activity = [];
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.data);
+    // print(widget.data["fullName"]);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -73,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               Text(
-                "Imran",
+                widget.data['fullName'],
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
@@ -211,9 +219,85 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   // Groups Tab
                                   // ... (similar implementation for other tabs)
-                                  Center(child: Text("Content for Tab 2")),
+                                  ListView.builder(
+                                    itemCount: groups.length,
+                                    itemBuilder: (context, index) {
+                                      String title = groups[index].title;
+                                      String initialLetter = title.isNotEmpty
+                                          ? title[0].toUpperCase()
+                                          : "";
+
+                                      return Dismissible(
+                                        key: Key(groups[index]
+                                            .timestamp
+                                            .toString()), // Use a unique key
+                                        onDismissed: (direction) {
+                                          // Remove the item
+                                          setState(() {
+                                            groups.removeAt(index);
+                                          });
+                                        },
+                                        background: Container(
+                                          color: Colors.red,
+                                          child: Icon(Icons.delete,
+                                              color: Colors.white),
+                                          alignment: Alignment.centerRight,
+                                          padding: EdgeInsets.only(right: 16.0),
+                                        ),
+                                        child: ListTile(
+                                          leading: CircleAvatar(
+                                            // Display the initial letter dynamically
+                                            backgroundColor: Colors.blue,
+                                            child: Text(initialLetter),
+                                          ),
+                                          title: Text(title),
+                                          trailing: Text(
+                                              'Rs: ${groups[index].amount}'),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  // Center(child: Text("Content for Tab 2")),
                                   // Activity Tab
-                                  Center(child: Text("Content for Tab 3")),
+                                  ListView.builder(
+                                    itemCount: activity.length,
+                                    itemBuilder: (context, index) {
+                                      String title = activity[index].title;
+                                      String initialLetter = title.isNotEmpty
+                                          ? title[0].toUpperCase()
+                                          : "";
+
+                                      return Dismissible(
+                                        key: Key(activity[index]
+                                            .timestamp
+                                            .toString()), // Use a unique key
+                                        onDismissed: (direction) {
+                                          // Remove the item
+                                          setState(() {
+                                            activity.removeAt(index);
+                                          });
+                                        },
+                                        background: Container(
+                                          color: Colors.red,
+                                          child: Icon(Icons.delete,
+                                              color: Colors.white),
+                                          alignment: Alignment.centerRight,
+                                          padding: EdgeInsets.only(right: 16.0),
+                                        ),
+                                        child: ListTile(
+                                          leading: CircleAvatar(
+                                            // Display the initial letter dynamically
+                                            backgroundColor: Colors.blue,
+                                            child: Text(initialLetter),
+                                          ),
+                                          title: Text(title),
+                                          trailing: Text(
+                                              'Rs: ${activity[index].amount}'),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                  // Center(child: Text("Content for Tab 3")),
                                 ],
                               ),
                             ),

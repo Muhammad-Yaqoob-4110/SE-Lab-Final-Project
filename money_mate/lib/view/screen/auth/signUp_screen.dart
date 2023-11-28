@@ -25,6 +25,9 @@ import 'package:moneymate/view/basewidget/textfield/custom_password_textfield.da
 import 'package:moneymate/view/basewidget/textfield/customtextfield.dart';
 import 'package:moneymate/view/screen/auth/widget/custom_tool_bar.dart';
 import 'package:moneymate/view/screen/home/home_screen.dart';
+import 'package:moneymate/alerts/alerts.dart';
+import 'package:moneymate/APIs/signupapi.dart';
+import 'package:moneymate/config.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -36,7 +39,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final _passController = TextEditingController();
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
-
+  final String signUpApi = ApiConstants.signUpApi;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -112,12 +115,44 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           padding:
                               EdgeInsets.only(left: 10, right: 10, top: 30),
                           child: CustomTextButton(
-                              text: "Login",
+                              text: "Sign up",
                               onPress: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomeScreen()));
+                                var fullName = _nameController.text.trim();
+                                var email = _emailController.text.trim();
+                                var password = _passController.text.trim();
+                                var phoneNo = _numberController.text.trim();
+                                if (fullName == "") {
+                                  showCustomNameAlert(context);
+                                } else if (isValidEmail(email) == false) {
+                                  showCustomEmailAlert(context);
+                                } else if (password == "") {
+                                  showCustomPaswordAlert(context);
+                                } else if (isValidPhoneNumber(phoneNo) ==
+                                    false) {
+                                  showCustomPhoneAlert(context);
+                                } else {
+                                  signupUser(
+                                          apiUrl: signUpApi,
+                                          fullName: fullName,
+                                          email: email,
+                                          password: password,
+                                          phoneNo: phoneNo)
+                                      .then((responseData) {
+                                    final message = responseData["message"];
+                                    if (message ==
+                                        "User created successfully") {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomeScreen()));
+                                    }
+                                    // showCustomApiResponce(context, message);
+                                  }).catchError((error) {
+                                    showCustomErrorOccured(
+                                        context, "An error occurred: $error");
+                                  });
+                                }
                               }),
                         ),
                       ]),
