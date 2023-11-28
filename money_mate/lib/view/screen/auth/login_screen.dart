@@ -1,11 +1,11 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:splitwise/view/basewidget/button/custom_buttton.dart';
-import 'package:splitwise/view/basewidget/textfield/custom_password_textfield.dart';
-import 'package:splitwise/view/basewidget/textfield/customtextfield.dart';
-import 'package:splitwise/view/screen/auth/widget/custom_tool_bar.dart';
-import 'package:splitwise/view/screen/home/home_screen.dart';
+import 'package:moneymate/view/basewidget/button/custom_buttton.dart';
+import 'package:moneymate/view/basewidget/textfield/custom_password_textfield.dart';
+import 'package:moneymate/view/basewidget/textfield/customtextfield.dart';
+import 'package:moneymate/view/screen/auth/widget/custom_tool_bar.dart';
+import 'package:moneymate/view/screen/home/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:splitwise/util/images.dart';
-import 'package:splitwise/view/screen/auth/login_screen.dart';
-import 'package:splitwise/view/screen/auth/signUp_screen.dart';
+import 'package:moneymate/util/images.dart';
+import 'package:moneymate/view/screen/auth/login_screen.dart';
+import 'package:moneymate/view/screen/auth/signUp_screen.dart';
 // import 'package:splitwise/view/screen/auth/signUp_screen.dart';
 // import 'package:splitwise/view/screen/home/home_screen.dart';
 

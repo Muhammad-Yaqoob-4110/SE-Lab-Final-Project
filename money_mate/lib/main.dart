@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:splitwise/view/screen/splash/splash_screen.dart';
+import 'package:moneymate/view/screen/splash/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
