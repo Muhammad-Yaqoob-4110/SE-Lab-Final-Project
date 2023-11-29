@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:moneymate/util/images.dart';
 import 'package:moneymate/util/text.dart';

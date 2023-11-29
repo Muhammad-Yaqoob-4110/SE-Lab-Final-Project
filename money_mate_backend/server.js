@@ -2,29 +2,28 @@ const express = require("express");
 const app = express();
 const port = 4110;
 const cors = require("cors");
-const bodyparcer = require("body-parser");
+const bodyparser = require("body-parser");
 require("./utils/db");
 const userRouter = require("./routes/userRoutes");
 const groupRouter = require("./routes/groupRoutes");
 const expenseRouter = require("./routes/expenseRoutes");
 
-// get fun has two arguments first is end point then call back (no need to call. Called automatically)function
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 
 //Middlewares
-app.use(bodyparcer.json());
+app.use(bodyparser.json());
 app.use(cors());
 
-// Product API
-app.use("/api", userRouter);
+// User API
+app.use("/api/users", userRouter);
 
 // Group API
 app.use("/api", groupRouter);
 
 // Expense API
-app.use("/api", expenseRouter);
+app.use("/api/expenses", expenseRouter);
 
 app.get("/welcome", (req, res) => {
   res.send("<h1>Welcome Ali Ahmed</h1>");

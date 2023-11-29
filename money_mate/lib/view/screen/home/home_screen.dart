@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:moneymate/alerts/alerts.dart';
+import 'package:moneymate/view/basewidget/textfield/custom_password_textfield.dart';
+import 'package:moneymate/config.dart';
+import 'package:moneymate/APIs/get_all_groups.dart';
 
 enum ActiveTab { Friends, Groups, Activity }
 
 class HomeScreen extends StatefulWidget {
   final dynamic data;
+  final dynamic token;
 
-  HomeScreen({Key? key, this.data}) : super(key: key);
+  HomeScreen({Key? key, this.data, this.token}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -17,11 +22,153 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ItemData> friends = [];
   List<ItemData> groups = [];
   List<ItemData> activity = [];
+  List<ItemData> groupsList = [];
 
   ActiveTab _activeTab = ActiveTab.Friends;
+  final TextEditingController _discriptionController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  // final TextEditingController _paidByController = TextEditingController();
+  String selectedMember = "";
+
+  Future<void> _addExpenseDialog(BuildContext context, dynamic group) {
+    // List<dynamic> list = group["members"] as List<dynamic>;
+    // String dropdownValue = list.first.toString();
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Create an Expense'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                  child: CustomPasswordTextField(
+                    hinttext: "Description",
+                    controller: _discriptionController,
+                  ),
+                ),
+                // CustomInputField(
+                //   label: 'Description',
+                //   icon: Icons.description,
+                //   controller: _discriptionController,
+                //   customColor: customColor,
+                //   appColor: appColor,
+                // ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                  child: CustomPasswordTextField(
+                    hinttext: "Amount",
+                    controller: _amountController,
+                  ),
+                ),
+                // CustomInputField(
+                //   label: 'Amount',
+                //   icon: Icons.money,
+                //   controller: _amountController,
+                //   customColor: customColor,
+                //   appColor: appColor,
+                // ),
+                const SizedBox(height: 16),
+                // Column(
+                //   crossAxisAlignment: CrossAxisAlignment.start,
+                //   children: [
+                //     Text('Paid By:'),
+                //     DropdownButton<String>(
+                //       isDense: true,
+                //       value: dropdownValue,
+                //       hint: Text("Select a member"),
+                //       onChanged: (String? newValue) {
+                //         setState(() {
+                //           dropdownValue = newValue!;
+                //         });
+                //       },
+                //       items: list.map((dynamic member) {
+                //         return DropdownMenuItem<String>(
+                //           value: member.toString(),
+                //           child: SizedBox(
+                //             height: 40, // Adjust the height of each item
+                //             child: Center(child: Text(member.toString())),
+                //           ),
+                //         );
+                //       }).toList(),
+                //     ),
+                //   ],
+                // ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Done'),
+              onPressed: () {
+                var description = _discriptionController.text.trim();
+                var amount = _amountController.text.trim();
+                if (description == "") {
+                  // print("Click");
+                  showDescriptionAlert(context);
+                } else if (containsOnlyNumbers(amount) == false) {
+                  showAmountAlert(context);
+                } else {
+                  // createExpense(
+                  //         apiUrl: ApiConstants.createExpenseApi,
+                  //         description: description,
+                  //         amount: double.parse(amount),
+                  //         paidBy: dropdownValue,
+                  //         group: widget.groupDetails["_id"])
+                  //     .then((responseData) {
+                  //   print(responseData);
+                  //   final message = responseData["message"];
+                  //   if (message == "Expense Written Successfully") {
+                  //     setState(() {
+                  //       expenseList.add(responseData["newExpense"]);
+                  //     });
+                  //     // print("Reached");
+                  //     _discriptionController.text = "";
+                  //     _amountController.text = "";
+                  //     Navigator.of(context).pop();
+                  //     showCustomApiResponce(context, message);
+                  //   }
+                  // }).catchError((error) {
+                  //   showCustomErrorOccured(
+                  //       context, "An error occurred: $error");
+                  // });
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    // getGroupsApi(
+    //         apiUrl: ApiConstants.getGroupsByToken, bearerToken: widget.token)
+    //     .then((responseData) {
+    //   final groupsList = responseData["groups"];
+    //   print(groupsList);
+    //   setState(() {
+    //     groupsList;
+    //   });
+    // });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -257,6 +404,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         child: ListTile(
                                           onTap: () {
+                                            _addExpenseDialog(
+                                                context, groups[index]);
                                             print('Item tapped: $groupName');
                                           },
                                           leading: CircleAvatar(

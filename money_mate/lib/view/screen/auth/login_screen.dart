@@ -118,7 +118,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => HomeScreen(
-                                                data: responseData["data"]),
+                                              data: responseData["data"],
+                                              token: responseData["token"],
+                                            ),
                                           ),
                                         );
                                       }

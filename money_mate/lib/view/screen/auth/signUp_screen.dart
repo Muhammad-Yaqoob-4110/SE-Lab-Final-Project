@@ -163,8 +163,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen()));
+                                              builder: (context) => HomeScreen(
+                                                  data: responseData["user"],
+                                                  token:
+                                                      responseData["token"])));
                                     }
                                     // showCustomApiResponce(context, message);
                                   }).catchError((error) {

@@ -1,15 +1,24 @@
 const groupController = require("../controllers/groupController");
-const router = require("./userRoutes");
+const express = require("express");
+const router = express.Router();
+const auth = require("../utils/auth");
 
-// creatae group
-router.post("/create-group", groupController.createGroup);
+// get all groups
+router.get("/all_groups", groupController.getgroups);
+
+// create group
+router.post("/groups", auth.validateToken, groupController.createGroup);
 
 // add member
-router.post("/add-member", groupController.addMembers);
-
-// Add an expense to a group
-router.post("/add-expense/:groupId", groupController.addExpences);
+router.post(
+  "/groups/:groupId/members",
+  auth.validateToken,
+  groupController.addMembers
+);
 
 // get all groups list
-router.get("/groups/:email", groupController.getAllGroups);
+router.get("/groups", auth.validateToken, groupController.getAllGroups);
+
+router.delete("/groups/:id", auth.validateToken, groupController.deleteGroup);
+
 module.exports = router;
