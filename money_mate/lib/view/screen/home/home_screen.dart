@@ -3,12 +3,16 @@ import 'package:moneymate/alerts/alerts.dart';
 import 'package:moneymate/view/basewidget/textfield/custom_password_textfield.dart';
 import 'package:moneymate/config.dart';
 import 'package:moneymate/APIs/get_all_groups.dart';
+import 'package:moneymate/APIs/create_group_api.dart';
+// import 'package:moneymate/APIs/groupsClass.dart';
 
 enum ActiveTab { Friends, Groups, Activity }
 
+// List<Map<String, dynamic>> jsonData = [];
+
 class HomeScreen extends StatefulWidget {
-  final dynamic data;
   final dynamic token;
+  final dynamic data;
 
   HomeScreen({Key? key, this.data, this.token}) : super(key: key);
 
@@ -23,42 +27,23 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ItemData> groups = [];
   List<ItemData> activity = [];
   List<ItemData> groupsList = [];
-  List<Map<String, dynamic>> jsonData = [
-    {
-      "_id": "65676159d086fca65058e6e3",
-      "name": "abc",
-      "createdBy": "aliahmed@gmail.com",
-      "members": [
-        {
-          "email": "aliahmed@gmail.com",
-          "amount": 100,
-          "_id": "65676159d086fca65058e6e4"
-        },
-        {
-          "email": "ali@gmail.com",
-          "amount": -100,
-          "_id": "6567f29555bce779985040d2"
-        }
-      ],
-      "createdAt": "2023-11-29T16:05:45.594Z",
-      "updatedAt": "2023-11-30T02:33:04.239Z",
-      "__v": 1
-    },
-    // ... (other objects)
-  ];
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _fetchData();
-  // }
+  List<Map<String, dynamic>> jsonData = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    const getGroups = ApiConstants.getGroupsByToken;
+    var authT = widget.token;
+
+    getGroupsApi(apiUrl: getGroups, bearerToken: authT).then((response) {
+      setState(() {
+        jsonData = response.groups.map((group) => group.toJson()).toList();
+      });
+    });
+  }
 
   // Future<void> _fetchData() async {
-  //   const getGroups = ApiConstants.getGroupsByToken;
-  //   var authT = widget.token;
-
-  //   final responseData =
-  //       await getGroupsApi(apiUrl: getGroups, bearerToken: authT);
-
   //   final dynamic groupsData = responseData['groups'];
 
   //   if (groupsData is List) {
@@ -73,6 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
   ActiveTab _activeTab = ActiveTab.Friends;
   final TextEditingController _discriptionController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController groupNameController = TextEditingController();
+
   // final TextEditingController _paidByController = TextEditingController();
   String selectedMember = "";
 
@@ -539,22 +527,55 @@ class _HomeScreenState extends State<HomeScreen> {
           showModalBottomSheet(
             context: context,
             builder: (BuildContext context) {
-              return AddItemBottomSheet(
-                onItemAdded: (ItemData newItem) {
-                  switch (_activeTab) {
-                    case ActiveTab.Friends:
-                      friends.add(newItem);
-                      break;
-                    case ActiveTab.Groups:
-                      groups.add(newItem);
-                      break;
-                    case ActiveTab.Activity:
-                      activity.add(newItem);
-                      break;
-                  }
-                  setState(() {});
-                },
-                activeTab: _activeTab,
+              return Container(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Additional fields based on the active tab
+                    if (_activeTab == ActiveTab.Friends)
+                      TextField(
+                        controller: emailController,
+                        decoration:
+                            InputDecoration(labelText: 'Friend\'s Email'),
+                      ),
+                    if (_activeTab == ActiveTab.Groups)
+                      TextField(
+                        controller: groupNameController,
+                        decoration: InputDecoration(labelText: 'Group Name'),
+                      ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        DateTime currentTime = DateTime.now();
+                        ItemData newItem = ItemData(
+                          timestamp: currentTime,
+                          // Additional data based on the active tab
+                          email: _activeTab == ActiveTab.Friends
+                              ? emailController.text
+                              : null,
+                          groupName: _activeTab == ActiveTab.Groups
+                              ? groupNameController.text
+                              : null,
+                        );
+
+                        // Conditionally call different APIs based on the active tab
+                        if (_activeTab == ActiveTab.Friends) {
+                          // Call the friends API
+                          callFriendsApi(newItem);
+                        } else if (_activeTab == ActiveTab.Groups) {
+                          // Call the groups API
+                          callGroupsApi(newItem);
+                        }
+
+                        emailController.clear();
+                        groupNameController.clear();
+                        Navigator.pop(context);
+                      },
+                      child: Text('Add Item'),
+                    ),
+                  ],
+                ),
               );
             },
           );
@@ -564,70 +585,27 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-}
 
-class AddItemBottomSheet extends StatefulWidget {
-  final Function(ItemData) onItemAdded;
-  final ActiveTab activeTab;
+  void callFriendsApi(ItemData newItem) {
+    // print(newItem.email);
+  }
 
-  const AddItemBottomSheet({
-    Key? key,
-    required this.onItemAdded,
-    required this.activeTab,
-  }) : super(key: key);
+  void callGroupsApi(ItemData newItem) async {
+    const apiUrl = ApiConstants.createGroupApi;
+    var groupName = newItem.groupName ?? "";
+    var bearerToken = widget.token ?? "";
+    // print(bearerToken);
+    // print(groupName);
 
-  @override
-  _AddItemBottomSheetState createState() => _AddItemBottomSheetState();
-}
-
-class _AddItemBottomSheetState extends State<AddItemBottomSheet> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController groupNameController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Additional fields based on the active tab
-          if (widget.activeTab == ActiveTab.Friends)
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: 'Friend\'s Email'),
-            ),
-          if (widget.activeTab == ActiveTab.Groups)
-            TextField(
-              controller: groupNameController,
-              decoration: InputDecoration(labelText: 'Group Name'),
-            ),
-          SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              DateTime currentTime = DateTime.now();
-              ItemData newItem = ItemData(
-                timestamp: currentTime,
-                // Additional data based on the active tab
-                email: widget.activeTab == ActiveTab.Friends
-                    ? emailController.text
-                    : null,
-                groupName: widget.activeTab == ActiveTab.Groups
-                    ? groupNameController.text
-                    : null,
-              );
-
-              widget.onItemAdded(newItem);
-
-              emailController.clear();
-              groupNameController.clear();
-              Navigator.pop(context);
-            },
-            child: Text('Add Item'),
-          ),
-        ],
-      ),
-    );
+    await createGroupApiCall(
+            apiUrl: apiUrl, groupName: groupName, bearerToken: bearerToken)
+        .then((response) {
+      // print(response['group']);
+      setState(() {
+        jsonData.add(response['group']);
+      });
+      // print(jsonData);
+    });
   }
 }
 
