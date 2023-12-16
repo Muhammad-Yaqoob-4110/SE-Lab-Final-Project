@@ -14,5 +14,6 @@ Future<Map<String, dynamic>> getGroupsApi({
   );
 
   final responseData = json.decode(response.body);
+  // print(responseData);
   return responseData;
 }

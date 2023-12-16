@@ -23,6 +23,52 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ItemData> groups = [];
   List<ItemData> activity = [];
   List<ItemData> groupsList = [];
+  List<Map<String, dynamic>> jsonData = [
+    {
+      "_id": "65676159d086fca65058e6e3",
+      "name": "abc",
+      "createdBy": "aliahmed@gmail.com",
+      "members": [
+        {
+          "email": "aliahmed@gmail.com",
+          "amount": 100,
+          "_id": "65676159d086fca65058e6e4"
+        },
+        {
+          "email": "ali@gmail.com",
+          "amount": -100,
+          "_id": "6567f29555bce779985040d2"
+        }
+      ],
+      "createdAt": "2023-11-29T16:05:45.594Z",
+      "updatedAt": "2023-11-30T02:33:04.239Z",
+      "__v": 1
+    },
+    // ... (other objects)
+  ];
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _fetchData();
+  // }
+
+  // Future<void> _fetchData() async {
+  //   const getGroups = ApiConstants.getGroupsByToken;
+  //   var authT = widget.token;
+
+  //   final responseData =
+  //       await getGroupsApi(apiUrl: getGroups, bearerToken: authT);
+
+  //   final dynamic groupsData = responseData['groups'];
+
+  //   if (groupsData is List) {
+  //     setState(() {
+  //       jsonData = List<Map<String, dynamic>>.from(
+  //         groupsData.cast<Map<String, dynamic>>(),
+  //       );
+  //     });
+  //   }
+  // }
 
   ActiveTab _activeTab = ActiveTab.Friends;
   final TextEditingController _discriptionController = TextEditingController();
@@ -378,21 +424,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   // Groups Tab
                                   ListView.builder(
-                                    itemCount: groups.length,
+                                    itemCount: jsonData.length,
                                     itemBuilder: (context, index) {
                                       String groupName =
-                                          groups[index].groupName ?? "";
+                                          jsonData[index]["name"] ?? "";
                                       String initialLetter =
                                           groupName.isNotEmpty
                                               ? groupName[0].toUpperCase()
                                               : "";
 
+                                      // Replace 'Rs: ${groups[index].groupName}' with the correct field
+                                      String groupAmount =
+                                          'Rs: ${jsonData[index]["members"][0]["amount"]}';
+                                      List<Map<String, dynamic>> members =
+                                          jsonData[0]["members"];
+                                      for (var member in members) {
+                                        if (member["email"] ==
+                                            widget.data["email"]) {
+                                          // Accessing and printing the amount
+                                          groupAmount =
+                                              'Rs: ${member["amount"]}';
+                                        }
+                                      }
                                       return Dismissible(
-                                        key: Key(
-                                            groups[index].timestamp.toString()),
+                                        key: Key(jsonData[index]["createdAt"]
+                                            .toString()),
                                         onDismissed: (direction) {
                                           setState(() {
-                                            groups.removeAt(index);
+                                            jsonData.removeAt(index);
                                           });
                                         },
                                         background: Container(
@@ -404,8 +463,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         ),
                                         child: ListTile(
                                           onTap: () {
-                                            _addExpenseDialog(
-                                                context, groups[index]);
+                                            // Replace '_addExpenseDialog(context, groups[index]);' with your logic
                                             print('Item tapped: $groupName');
                                           },
                                           leading: CircleAvatar(
@@ -413,8 +471,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             child: Text(initialLetter),
                                           ),
                                           title: Text(groupName),
-                                          trailing: Text(
-                                              'Rs: ${groups[index].groupName}'),
+                                          trailing: Text(groupAmount),
                                         ),
                                       );
                                     },
