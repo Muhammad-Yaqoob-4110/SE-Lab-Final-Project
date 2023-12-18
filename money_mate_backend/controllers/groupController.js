@@ -13,7 +13,7 @@ async function getgroups(req, res) {
 async function getAllGroups(req, res) {
   try {
     const user = await User.findById(req.user_id);
-    console.log(user.email);
+    // console.log(user);
 
     // Find groups where the user is a member
     const groups = await Groups.find({ "members.email": user.email });
@@ -21,6 +21,7 @@ async function getAllGroups(req, res) {
     // Calculate total expense for the user "ali@gmail.com"
     let totalExpense = 0;
     groups.forEach((group) => {
+      console.log(group);
       const member = group.members.find(
         (member) => member.email === user.email
       );
@@ -113,4 +114,5 @@ module.exports = {
   getAllGroups,
   createGroup,
   deleteGroup,
+  getAllMembers,
 };

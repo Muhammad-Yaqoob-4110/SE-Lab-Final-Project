@@ -19,6 +19,9 @@ router.post(
 // get all groups list
 router.get("/groups", auth.validateToken, groupController.getAllGroups);
 
+// get all members list
+router.get("/groups/:id", auth.validateToken, groupController.getAllMembers);
+
 router.delete("/groups/:id", auth.validateToken, groupController.deleteGroup);
 
 module.exports = router;

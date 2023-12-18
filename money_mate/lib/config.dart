@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class ApiConstants {
   static const String baseUrl = "http://138.68.108.189/api";
+  // static const String baseUrl = "http://127.0.0.1:4110/api";
   static const String loginUserApi = "$baseUrl/users/login";
   static const String signUpApi = "$baseUrl/users";
   static const String updateUserApi = "$baseUrl/users";

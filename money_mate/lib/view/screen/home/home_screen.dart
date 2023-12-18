@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:moneymate/alerts/alerts.dart';
-import 'package:moneymate/view/basewidget/textfield/custom_password_textfield.dart';
 import 'package:moneymate/config.dart';
 import 'package:moneymate/APIs/get_all_groups.dart';
 import 'package:moneymate/APIs/create_group_api.dart';
+import 'package:moneymate/view/screen/account/account_screen.dart';
+import 'package:moneymate/view/screen/group/group_info_screen.dart';
 // import 'package:moneymate/APIs/groupsClass.dart';
 
 enum ActiveTab { Friends, Groups, Activity }
@@ -67,10 +67,18 @@ class _HomeScreenState extends State<HomeScreen> {
               // your logic
             },
             itemBuilder: (BuildContext bc) {
-              return const [
+              return [
                 PopupMenuItem(
-                  child: Text("Hello"),
+                  child: Text("My Account"),
                   value: '/hello',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              Account(data: widget.data, token: widget.token)),
+                    );
+                  },
                 ),
                 PopupMenuItem(
                   child: Text("About"),
@@ -304,6 +312,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                           onTap: () {
                                             // Replace '_addExpenseDialog(context, groups[index]);' with your logic
                                             print('Item tapped: $groupName');
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      GroupScreen(
+                                                          group:
+                                                              jsonData[index],
+                                                          data: widget.data,
+                                                          token: widget.token)),
+                                            );
                                           },
                                           leading: CircleAvatar(
                                             backgroundColor: Colors.blue,

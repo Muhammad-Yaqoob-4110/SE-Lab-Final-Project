@@ -21,6 +21,20 @@ class _LoginScreenState extends State<LoginScreen> {
   final String loginUserApi = ApiConstants.loginUserApi;
   String validate = "";
 
+// await saveDataAndTokenToSharedPreferences(token: responseData["token"],data: responseData["data"],);
+//     Future<void> saveDataAndTokenToSharedPreferences({
+//     required String token,
+//     required Map<String, dynamic> data,
+//   }) async {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+//     // Save token as a string
+//     await prefs.setString('token', token);
+
+//     // Save data as a JSON string
+//     await prefs.setString('data', json.encode(data));
+//   }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
