@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:moneymate/view/screen/home/home_screen.dart';
+import 'package:moneymate/config.dart';
+import 'package:moneymate/APIs/get_expenses_api.dart';
 
-enum ActiveTab { Members, Expenses }
+enum ActiveTab { Expenses, Members }
 
 class GroupScreen extends StatefulWidget {
   final dynamic group;
@@ -17,14 +19,34 @@ class GroupScreen extends StatefulWidget {
 class _GroupScreenState extends State<GroupScreen> {
   Color myColor = Color(0xFF4CBB9B);
   List<ItemData> activity = [];
+  List<Map<String, dynamic>> jsonData = [];
 
-  ActiveTab _activeTab = ActiveTab.Members;
+  ActiveTab _activeTab = ActiveTab.Expenses;
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController amountController = TextEditingController();
+
   TextEditingController emailController = TextEditingController();
   TextEditingController groupNameController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    var url = '${ApiConstants.getAllExpensesList}/${widget.group['_id']}';
+    getExpensesApi(apiUrl: url).then((response) {
+      // print(response);
+      setState(() {
+        jsonData =
+            response.expenses.map((expense) => expense.toJson()).toList();
+      });
+      print(jsonData);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    print(widget.group);
+    // print(widget.group._id);
+    // print(widget.group);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -132,8 +154,8 @@ class _GroupScreenState extends State<GroupScreen> {
                         children: [
                           TabBar(
                             tabs: const <Widget>[
-                              Text("Members"),
                               Text("Expenses"),
+                              Text("Members"),
                               // Text("Activity"),
                             ],
                             indicatorWeight: 4,
@@ -147,23 +169,22 @@ class _GroupScreenState extends State<GroupScreen> {
                             child: Container(
                               child: TabBarView(
                                 children: [
-                                  // add members Tab
+                                  // add expense Tab
                                   ListView.builder(
-                                    itemCount: activity.length,
+                                    itemCount: jsonData.length,
                                     itemBuilder: (context, index) {
+                                      final Map<String, dynamic> currentData =
+                                          jsonData[index];
                                       String title =
-                                          activity[index].email ?? "";
-                                      String initialLetter = title.isNotEmpty
-                                          ? title[0].toUpperCase()
-                                          : "";
+                                          currentData['description'] ?? '';
+                                      String amount =
+                                          'Rs: ${currentData['amount'] ?? 0.0}';
 
                                       return Dismissible(
-                                        key: Key(activity[index]
-                                            .timestamp
-                                            .toString()),
+                                        key: Key(currentData['_id']),
                                         onDismissed: (direction) {
                                           setState(() {
-                                            activity.removeAt(index);
+                                            jsonData.removeAt(index);
                                           });
                                         },
                                         background: Container(
@@ -180,17 +201,18 @@ class _GroupScreenState extends State<GroupScreen> {
                                           },
                                           leading: CircleAvatar(
                                             backgroundColor: Colors.blue,
-                                            child: Text(initialLetter),
+                                            child: Text(title.isNotEmpty
+                                                ? title[0].toUpperCase()
+                                                : ""),
                                           ),
                                           title: Text(title),
-                                          trailing: const Text(
-                                            'Rs: 0',
-                                          ),
+                                          trailing: Text(amount),
                                         ),
                                       );
                                     },
                                   ),
-                                  // add expenses Tab
+
+                                  // add members Tab
                                   ListView.builder(
                                     itemCount: activity.length,
                                     itemBuilder: (context, index) {
@@ -253,29 +275,61 @@ class _GroupScreenState extends State<GroupScreen> {
             context: context,
             builder: (BuildContext context) {
               return Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    TextField(
-                      controller: emailController,
-                      decoration:
-                          const InputDecoration(labelText: 'Friend\'s Email'),
-                    ),
-                    const SizedBox(height: 16),
+                    // Additional fields based on the active tab
+                    if (_activeTab == ActiveTab.Expenses)
+                      TextField(
+                        controller: descriptionController,
+                        decoration: InputDecoration(labelText: 'Description'),
+                      ),
+                    if (_activeTab == ActiveTab.Expenses)
+                      TextField(
+                        controller: amountController,
+                        decoration: InputDecoration(labelText: 'Amount'),
+                      ),
+                    if (_activeTab == ActiveTab.Members)
+                      TextField(
+                        controller: groupNameController,
+                        decoration:
+                            InputDecoration(labelText: "Friend's Email"),
+                      ),
+                    SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        ItemData randomItemData = ItemData(
-                            timestamp: DateTime.timestamp(),
-                            email: emailController.text);
-                        setState(() {
-                          activity.add(randomItemData);
-                        });
+                        // DateTime currentTime = DateTime.now();
+                        // ItemData newItem = ItemData(
+                        //   timestamp: currentTime,
+                        //   // Additional data based on the active tab
+                        //   email: _activeTab == ActiveTab.Friends
+                        //       ? emailController.text
+                        //       : null,
+                        //   groupName: _activeTab == ActiveTab.Groups
+                        //       ? groupNameController.text
+                        //       : null,
+                        // );
 
+                        // Conditionally call different APIs based on the active tab
+                        if (_activeTab == ActiveTab.Expenses) {
+                          // Call the friends API
+                          // callFriendsApi(newItem);
+                          print('expenses');
+                          print('Description: ${descriptionController.text}');
+                        } else if (_activeTab == ActiveTab.Members) {
+                          // Call the groups API
+                          // callGroupsApi(newItem);
+                          print('members');
+                        }
+
+                        descriptionController.clear();
+                        amountController.clear();
                         emailController.clear();
+                        groupNameController.clear();
                         Navigator.pop(context);
                       },
-                      child: const Text('Add Friend'),
+                      child: Text('Add Item'),
                     ),
                   ],
                 ),
@@ -295,11 +349,12 @@ class ItemData {
   final String? email;
   final String? groupName;
   final String? title;
+  final String? description;
 
-  ItemData({
-    required this.timestamp,
-    this.email,
-    this.groupName,
-    this.title,
-  });
+  ItemData(
+      {required this.timestamp,
+      this.email,
+      this.groupName,
+      this.title,
+      this.description});
 }
