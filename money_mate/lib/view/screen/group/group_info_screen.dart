@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:moneymate/config.dart';
 import 'package:moneymate/APIs/get_expenses_api.dart';
 import 'package:moneymate/APIs/create_expense_api.dart';
+import 'package:moneymate/APIs/add_member_api.dart';
 
 enum ActiveTab { Expenses, Members }
 
@@ -295,7 +296,7 @@ class _GroupScreenState extends State<GroupScreen> {
                       ),
                     if (_activeTab == ActiveTab.Members)
                       TextField(
-                        controller: groupNameController,
+                        controller: emailController,
                         decoration:
                             InputDecoration(labelText: "Friend's Email"),
                       ),
@@ -330,7 +331,23 @@ class _GroupScreenState extends State<GroupScreen> {
                             });
                           });
                         } else if (_activeTab == ActiveTab.Members) {
-                          // Call the groups API
+                          var apiUrl =
+                              '${ApiConstants.addMemberToGroupApi}/${widget.group['_id']}/members';
+                          var em = emailController.text;
+                          var tok = widget.token;
+                          print(apiUrl);
+                          print(em);
+                          print(tok);
+                          addMemberApiCall(
+                            apiUrl: apiUrl,
+                            email: em,
+                            bearerToken: tok,
+                          ).then((response) {
+                            print(response);
+                            setState(() {
+                              widget.group['members'].add(response['member']);
+                            });
+                          });
                         }
 
                         descriptionController.clear();

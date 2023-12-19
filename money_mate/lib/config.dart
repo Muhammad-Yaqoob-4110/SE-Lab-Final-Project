@@ -9,7 +9,7 @@ class ApiConstants {
   static const String createGroupApi = "$baseUrl/groups";
   static const String getAllGroupsByEmailApi = "$baseUrl/groups";
   static const String getGroupsByToken = "$baseUrl/groups";
-  static const String addMemberToGroupApi = "$baseUrl/add-member";
+  static const String addMemberToGroupApi = "$baseUrl/groups";
   static const String getAllExpensesList = "$baseUrl/expenses";
   static const String createExpenseApi = "$baseUrl/expenses";
   static const String allFriendsApi = "$baseUrl/friends";
