@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:moneymate/view/screen/home/home_screen.dart';
+// import 'package:moneymate/view/screen/home/home_screen.dart';
 import 'package:moneymate/config.dart';
 import 'package:moneymate/APIs/get_expenses_api.dart';
+import 'package:moneymate/APIs/create_expense_api.dart';
 
 enum ActiveTab { Expenses, Members }
 
@@ -38,14 +39,14 @@ class _GroupScreenState extends State<GroupScreen> {
         jsonData =
             response.expenses.map((expense) => expense.toJson()).toList();
       });
-      print(jsonData);
+      // print(jsonData);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     // print(widget.group._id);
-    // print(widget.group);
+    // print(widget.group['members']);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -67,7 +68,7 @@ class _GroupScreenState extends State<GroupScreen> {
           child: Column(
             children: [
               Text(
-                widget.data?['fullName'] ?? 'Default Name',
+                widget.group?['name'] ?? 'Default Name',
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
@@ -96,7 +97,7 @@ class _GroupScreenState extends State<GroupScreen> {
                       children: [
                         Text("You are Own"),
                         Text(
-                          "1500",
+                          "700",
                           style: TextStyle(fontSize: 16),
                         )
                       ],
@@ -214,21 +215,23 @@ class _GroupScreenState extends State<GroupScreen> {
 
                                   // add members Tab
                                   ListView.builder(
-                                    itemCount: activity.length,
+                                    itemCount: widget.group['members'].length,
                                     itemBuilder: (context, index) {
-                                      String title =
-                                          activity[index].email ?? "";
+                                      String title = widget.group['members']
+                                              [index]['email'] ??
+                                          "";
                                       String initialLetter = title.isNotEmpty
                                           ? title[0].toUpperCase()
                                           : "";
 
                                       return Dismissible(
-                                        key: Key(activity[index]
-                                            .timestamp
+                                        key: Key(widget.group['members'][index]
+                                                ['_id']
                                             .toString()),
                                         onDismissed: (direction) {
                                           setState(() {
-                                            activity.removeAt(index);
+                                            widget.group['members']
+                                                .removeAt(index);
                                           });
                                         },
                                         background: Container(
@@ -248,8 +251,8 @@ class _GroupScreenState extends State<GroupScreen> {
                                             child: Text(initialLetter),
                                           ),
                                           title: Text(title),
-                                          trailing: const Text(
-                                            'Rs: 0',
+                                          trailing: Text(
+                                            'Rs: ${widget.group['members'][index]['amount']}',
                                           ),
                                         ),
                                       );
@@ -313,14 +316,21 @@ class _GroupScreenState extends State<GroupScreen> {
 
                         // Conditionally call different APIs based on the active tab
                         if (_activeTab == ActiveTab.Expenses) {
-                          // Call the friends API
-                          // callFriendsApi(newItem);
-                          print('expenses');
-                          print('Description: ${descriptionController.text}');
+                          const apiUrl = ApiConstants.createExpenseApi;
+                          createExpenseApiCall(
+                                  apiUrl: apiUrl,
+                                  description: descriptionController.text,
+                                  amount: int.parse(amountController.text),
+                                  paidById: widget.data['_id'],
+                                  groupId: widget.group['_id'])
+                              .then((response) {
+                            // print(response);
+                            setState(() {
+                              jsonData.add(response['newExpense']);
+                            });
+                          });
                         } else if (_activeTab == ActiveTab.Members) {
                           // Call the groups API
-                          // callGroupsApi(newItem);
-                          print('members');
                         }
 
                         descriptionController.clear();

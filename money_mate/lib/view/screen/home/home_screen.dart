@@ -4,6 +4,8 @@ import 'package:moneymate/APIs/get_all_groups.dart';
 import 'package:moneymate/APIs/create_group_api.dart';
 import 'package:moneymate/view/screen/account/account_screen.dart';
 import 'package:moneymate/view/screen/group/group_info_screen.dart';
+import 'package:moneymate/APIs/all_friends_api.dart';
+import 'package:moneymate/APIs/add_frieind_api.dart';
 // import 'package:moneymate/APIs/groupsClass.dart';
 
 enum ActiveTab { Friends, Groups, Activity }
@@ -28,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ItemData> activity = [];
   List<ItemData> groupsList = [];
   List<Map<String, dynamic>> jsonData = [];
+  List<Map<String, dynamic>> friendsJsonData = [];
   int? toalExpense;
   @override
   void initState() {
@@ -43,6 +46,16 @@ class _HomeScreenState extends State<HomeScreen> {
         jsonData = response.groups.map((group) => group.toJson()).toList();
       });
     });
+
+    const allFriends = ApiConstants.allFriendsApi;
+    allFriendsApi(apiUrl: allFriends, bearerToken: widget.token)
+        .then((response) => {
+              // print(response),
+              setState(() {
+                friendsJsonData =
+                    response.friends.map((friend) => friend.toJson()).toList();
+              })
+            });
   }
 
   ActiveTab _activeTab = ActiveTab.Friends;
@@ -54,14 +67,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print(friendsJsonData);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: myColor,
-        title: Text("MoneyMate"),
+        title: const Text("MoneyMate"),
         centerTitle: true,
         actions: [
-          Icon(Icons.search),
+          const Icon(Icons.search),
           PopupMenuButton(
             onSelected: (value) {
               // your logic
@@ -69,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
             itemBuilder: (BuildContext bc) {
               return [
                 PopupMenuItem(
-                  child: Text("My Account"),
+                  child: const Text("My Account"),
                   value: '/hello',
                   onTap: () {
                     Navigator.push(
@@ -230,17 +244,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   // Friends Tab
                                   ListView.builder(
-                                    itemCount: friends.length,
+                                    itemCount: friendsJsonData.length,
                                     itemBuilder: (context, index) {
                                       String friend =
-                                          friends[index].email ?? "";
+                                          friendsJsonData[index]['name'] ?? "";
                                       String initialLetter = friend.isNotEmpty
                                           ? friend[0].toUpperCase()
                                           : "";
 
                                       return Dismissible(
-                                        key: Key(friends[index]
-                                            .timestamp
+                                        key: Key(friendsJsonData[index]['email']
                                             .toString()),
                                         onDismissed: (direction) {
                                           setState(() {
@@ -264,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           title: Text(friend),
                                           trailing: Text(
-                                              'Rs: ${friends[index].email}'),
+                                              '${friendsJsonData[index]['email']}'),
                                         ),
                                       );
                                     },
@@ -455,8 +468,18 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void callFriendsApi(ItemData newItem) {
+  void callFriendsApi(ItemData newItem) async {
     // print(newItem.email);
+    var friendEmail = newItem.email;
+    var friendsApi = '${ApiConstants.addFriendApi}/$friendEmail';
+    var t = widget.token;
+    await addFriendApiCall(apiUrl: friendsApi, bearerToken: t).then((response) {
+      print(response);
+      setState(() {
+        friendsJsonData.add(response['friend']);
+      });
+      // print(jsonData);
+    });
   }
 
   void callGroupsApi(ItemData newItem) async {
